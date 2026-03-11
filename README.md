@@ -1,54 +1,61 @@
 # AttentionBar
 
-`AttentionBar` is a native macOS menu bar app for tracking what currently has your attention.
+`AttentionBar` is a native macOS menu bar app for quickly logging what currently has your attention.
 
-It gives you six categories:
+## Purpose
 
-- Creation
-- Consumption
-- Logistics
-- Connection
-- Exploration
-- Recovery
+The app is meant to answer a simple question at the end of the day: where did your attention actually go?
 
-The app saves its running state in `~/Library/Application Support/AttentionBar/tracking-state.json` and writes one CSV per reporting window into `~/Documents/Attention Reports`.
+Instead of tracking tasks, estimating time afterward, or filling out a journal, you keep a lightweight status running in your menu bar. When your focus changes, you click the new category. `AttentionBar` records those switches over time and turns them into a daily CSV report.
+
+This makes the app useful for:
+
+- spotting whether your day was mostly creation, admin, recovery, or distraction
+- building a low-friction personal attention log
+- exporting simple daily data you can review in Numbers, Excel, or scripts later
+
+## What It Tracks
+
+The app groups time into six categories:
+
+- `Creation`: designing, writing, coding, or making something
+- `Consumption`: reading, scrolling, watching, or taking in information
+- `Logistics`: scheduling, email, admin, errands, and coordination
+- `Connection`: calls, messages, meetings, and collaboration
+- `Exploration`: research, curiosity, experiments, and rabbit holes
+- `Recovery`: resting, walking, music, breaks, and downtime
+
+## How It Works
+
+1. The app lives in the macOS menu bar.
+2. Clicking a category starts tracking it immediately.
+3. Clicking a different category switches the active session.
+4. Clicking the active category again stops tracking.
+5. The app keeps a running total for the current reporting window.
+6. At the daily cutoff, it exports a CSV report automatically.
+
+The app saves its state in `~/Library/Application Support/AttentionBar/tracking-state.json` and writes CSV reports into `~/Documents/Attention Reports`.
 
 ## Reporting Window
 
 The reporting day closes at local `20:00`.
 
-- Each CSV is named by the date of that 20:00 cutoff.
-- Example: `attention-2026-03-10.csv` covers the window from `2026-03-09 20:00` to `2026-03-10 20:00`.
-- If your Mac is asleep or off at `20:00`, the app exports the missed CSV the next time it wakes or launches after `20:00`.
+- Each CSV is named for that cutoff date.
+- Example: `attention-2026-03-10.csv` covers `2026-03-09 20:00` through `2026-03-10 20:00`.
+- If your Mac is asleep or off at `20:00`, the missed export is written the next time the app wakes or launches.
 
 ## Run It
 
-1. In Terminal, go to the project folder.
-2. Build the app:
-
 ```bash
 swift build
-```
-
-3. Launch it:
-
-```bash
 swift run AttentionBar
 ```
 
-The app will appear in your menu bar as an icon. Click it to open the tracker popover.
+After launch, the app appears in the menu bar as an icon. Click it to open the tracker popover.
 
-## Use It
+## CSV Output
 
-1. Click one of the category chips to start tracking that category.
-2. Click another chip to switch categories.
-3. Click the active chip again to stop tracking.
-4. Click `Open CSV Folder` to jump straight to the exported files in Finder.
-5. Leave the app running in your menu bar if you want automatic end-of-day exports.
-
-## CSV Format
-
-Each CSV has one row per category:
+Each CSV contains one row per category for the reporting window:
 
 ```csv
 report_date,window_start,window_end,category,total_seconds,total_minutes,total_hhmmss
@@ -57,6 +64,6 @@ report_date,window_start,window_end,category,total_seconds,total_minutes,total_h
 
 ## Notes
 
-- The app pauses tracking when your Mac goes to sleep.
-- The app closes any active timer when it quits, so it does not count time while the app is not running.
-- This repo is a Swift Package so it works with `swift build` / `swift run`, and you can also open the package in Xcode later if you want to turn it into a bundled `.app`.
+- The app pauses tracking when the Mac goes to sleep.
+- The current session is closed on quit, so time is not counted while the app is not running.
+- This project is a Swift Package and can be built with `swift build` and run with `swift run`.
