@@ -1,0 +1,6 @@
+/.build/
+/.swiftpm/
+/.swiftpm-cache/
+/.tmp-home/
+
+.DS_Store
